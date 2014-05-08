@@ -27,7 +27,8 @@ app.post('/optimize', function(req, res) {
       console.log(format('got %s (%s; %d bytes)', filename, type, file.size))
       optimize(file.path, type).then(function(file) {
         console.log(format('%s: optimized and now %d bytes', filename, file.contents.length));
-        res.send(file);
+        res.set('Content-Type', type);
+        res.send(file.contents);
       }).catch(fail);
     }
   });
