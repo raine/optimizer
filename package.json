@@ -1,0 +1,24 @@
+{
+  "name": "optimizer",
+  "version": "0.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "author": "raine.virta@gmail.com",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.1.1",
+    "bluebird": "^1.2.4",
+    "morgan": "^1.0.1",
+    "multiparty": "^3.2.4",
+    "lodash": "^2.4.1",
+    "imagemin": "^0.4.6",
+    "tmp": "0.0.23"
+  }
+}
