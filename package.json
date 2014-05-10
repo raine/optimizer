@@ -20,6 +20,12 @@
     "lodash": "^2.4.1",
     "imagemin": "^0.4.6",
     "tmp": "0.0.23",
-    "imagemin-zopfli": "^0.1.0"
+    "imagemin-zopfli": "^0.1.0",
+    "browserify-middleware": "^2.6.1",
+    "reactify": "^0.13.1"
+  },
+  "devDependencies": {
+    "react": "^0.10.0"
+    "envify": "^1.2.1"
   }
 }

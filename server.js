@@ -10,10 +10,15 @@ var express = require('express')
   , tmp = Promise.promisifyAll(require('tmp'))
   , util = require('util')
   , format = util.format
+  , browserify = require('browserify-middleware')
 ;
 
 var app = express();
-app.use(logger());
+app.use(logger('dev'));
+app.use(express.static(__dirname + '/public'));
+
+browserify.settings({ transform: ['reactify'] });
+app.get('/app.js', browserify('./app/js/app.js'));
 
 app.post('/optimize', function(req, res) {
   var form = new multiparty.Form();
