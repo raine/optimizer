@@ -4,6 +4,7 @@ var express = require('express')
   , multiparty = require('multiparty')
   , _ = require('lodash')
   , Imagemin = require('imagemin')
+  , zopfli = require('imagemin-zopfli')
   , Promise = require('bluebird')
   , path = require('path')
   , tmp = Promise.promisifyAll(require('tmp'))
@@ -67,7 +68,8 @@ function middlewares(mime) {
   return {
     'image/png': [
       Imagemin.pngquant(),
-      Imagemin.optipng({ optimizationLevel: 3 })
+      // Imagemin.optipng({ optimizationLevel: 3 })
+      zopfli()
     ],
     'image/jpg': [
       Imagemin.jpegtran({ progressive: true })
