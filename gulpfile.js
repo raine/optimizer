@@ -1,18 +1,22 @@
 var gulp = require('gulp')
   , nodemon = require('gulp-nodemon')
   , livereload = require('gulp-livereload')
+  , path = require('path')
 ;
 
 gulp.task('livereload', function() {
   var lr = livereload();
   var reload = function(file) {
+    if (path.extname(file.path) === '.styl') {
+      file.path = __dirname + '/public/main.css';
+    }
+
     lr.changed(file.path);
   };
 
   gulp.watch([
-    'app/**/*.js'
-    // 'static/editor/{main,/lib/**/*,/vendor/*}.js',
-    // 'static/{*.css,*.html,javascripts/*.js}'
+    'app/**/*.js',
+    'app/css/**/*.styl'
   ]).on('change', reload);
 });
 

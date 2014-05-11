@@ -8,6 +8,7 @@ var express = require('express')
   , format = util.format
   , browserify = require('browserify-middleware')
   , livereload = require('connect-livereload')
+  , stylus = require('stylus')
 
   , optimize = require('./lib/optimize.js')
 ;
@@ -15,6 +16,10 @@ var express = require('express')
 var app = express();
 app.use(logger('dev'));
 app.use(livereload({ port: 35729 }));
+app.use(stylus.middleware({
+  src  : __dirname + '/app/css',
+  dest : __dirname + '/public',
+}));
 app.use(express.static(__dirname + '/public'));
 
 browserify.settings({ transform: ['reactify'] });
