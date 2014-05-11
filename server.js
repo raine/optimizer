@@ -23,8 +23,7 @@ app.get('/app.js', browserify('./app/js/app.js'));
 var getFile = _.compose(_.first, _.flatten, _.values);
 
 app.post('/optimize', function(req, res) {
-  var form = new multiparty.Form();
-  form.parse(req, function(err, fields, filesObj) {
+  (new multiparty.Form()).parse(req, function(err, fields, filesObj) {
     var file = getFile(filesObj);
     if (file === undefined) return res.send(400);
 
