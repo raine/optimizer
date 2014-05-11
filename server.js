@@ -22,23 +22,26 @@ app.use(express.static(__dirname + '/public'));
 browserify.settings({ transform: ['reactify'] });
 app.get('/app.js', browserify('./app/js/app.js'));
 
+var getFile = _.compose(_.first, _.flatten, _.values);
+
 app.post('/optimize', function(req, res) {
   var form = new multiparty.Form();
-  form.parse(req, function(err, fields, files) {
-    if (_.isEmpty(files) || files.file === undefined) {
-      res.send(400);
-    } else {
-      var file = files.file[0] // Assume one file
-        , type = file.headers['content-type']
-        , filename = file.originalFilename;
+  form.parse(req, function(err, fields, filesObj) {
+    var file = getFile(filesObj);
+    if (file === undefined) return res.send(400);
 
-      console.log(format('got %s (%s; %d bytes)', filename, type, file.size))
-      optimize(file.path, type).then(function(file) {
-        console.log(format('%s: optimized and now %d bytes', filename, file.contents.length));
-        res.set('Content-Type', type);
-        res.send(file.contents);
-      }).catch(fail);
-    }
+    var type = file.headers['content-type']
+      , filename = file.originalFilename;
+
+    console.log(format('got %s (%s; %d bytes)', filename, type, file.size))
+    optimize(file.path, type).then(function(opted) {
+      console.log(format('%s: optimized and now %d bytes', filename, opted.file.contents.length));
+      res.set('Content-Type', type);
+      res.send(opted.file.contents);
+    }).catch(function(err) {
+      console.error('Error:', err);
+      res.send({ 'error': err });
+    });
   });
 });
 
