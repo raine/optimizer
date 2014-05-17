@@ -9,6 +9,7 @@ var express = require('express')
   , browserify = require('browserify-middleware')
   , livereload = require('connect-livereload')
   , stylus = require('stylus')
+  , nib = require('nib')
 
   , optimize = require('./lib/optimize.js')
 ;
@@ -17,8 +18,14 @@ var app = express();
 app.use(logger('dev'));
 app.use(livereload({ port: 35729 }));
 app.use(stylus.middleware({
-  src  : __dirname + '/app/css',
-  dest : __dirname + '/public',
+  src     : __dirname + '/app/css',
+  dest    : __dirname + '/public',
+  compile : function(str, path) {
+    return stylus(str)
+      .set('filename', path)
+      // .set('compress', true)
+      .use(nib());
+  }
 }));
 app.use(express.static(__dirname + '/public'));
 
