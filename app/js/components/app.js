@@ -1,13 +1,10 @@
 /** @jsx React.DOM */
-var React = window.React = require('react')
+var React = require('react')
   , Dropzone = require('../lib/dropzone')
+  , FileTable = require('./filetable')
 ;
 
 var App = React.createClass({
-  // getInitialState: function () {
-  //   return { };
-  // },
-
   componentDidMount: function() {
     Dropzone(document.body)
       .on('drop', this.handleDrop);
@@ -24,11 +21,9 @@ var App = React.createClass({
     }
   },
 
-  render: function () {
+  render: function() {
     return (
-      // Table component
-      //  - give files as prop
-      <div></div>
+      <FileTable files={this.props.files}></FileTable>
     );
   }
 });

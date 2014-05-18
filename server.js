@@ -45,9 +45,10 @@ app.post('/optimize', function(req, res) {
     console.log(format('got %s (%s; %d bytes)', filename, type, file.size))
     optimize(file.path, type).then(function(opted) {
       console.log(format('%s: optimized and now %d bytes', filename, opted.file.contents.length));
-      res.set('Content-Type', type);
-      res.send(opted.file.contents);
-    }).catch(function(err) {
+      res.send(200);
+      // res.set('Content-Type', type);
+      // res.send(opted.file.contents);
+    }).error(function(err) {
       console.error('Error:', err);
       res.send({ 'error': err });
     });

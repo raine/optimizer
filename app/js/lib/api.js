@@ -1,4 +1,5 @@
 var Promise = require('bluebird')
+  , $ = require('jquery')
 ;
 
 exports.uploadFile = function(path, formData) {
@@ -22,11 +23,6 @@ exports.uploadFile = function(path, formData) {
   return deferred.promise;
 };
 
-// function file2fd(file) {
-//   var fd = new FormData();
-//   fd.append('file', file, file.name);
-//   return fd;
-// }
 // $(function() {
 //   $('#droparea').on('drop', function(ev) {
 //     ev.stopPropagation();

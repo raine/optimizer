@@ -24,7 +24,8 @@
     "browserify-middleware": "^2.6.1",
     "reactify": "^0.13.1",
     "stylus": "^0.44.0",
-    "nib": "^1.0.2"
+    "nib": "^1.0.2",
+    "node-uuid": "^1.4.1"
   },
   "devDependencies": {
     "react": "^0.10.0",
