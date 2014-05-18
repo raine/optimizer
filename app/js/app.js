@@ -2,7 +2,7 @@
 var React = window.React = require('react')
   , $ = require('jquery')
   , _ = require('lodash')
-  , Dropzone = require('./dropzone')
+  , Dropzone = require('./lib/dropzone')
   , Files = require('./lib/files')
 ;
 
