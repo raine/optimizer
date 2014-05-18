@@ -30,7 +30,7 @@ app.use(stylus.middleware({
 app.use(express.static(__dirname + '/public'));
 
 browserify.settings({ transform: ['reactify'] });
-app.get('/app.js', browserify('./app/js/app.js'));
+app.get('/index.js', browserify('./app/js/index.js'));
 
 var getFile = _.compose(_.first, _.flatten, _.values);
 
