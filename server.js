@@ -16,7 +16,7 @@ var express = require('express')
 
 var app = express();
 app.use(logger('dev'));
-app.use(livereload({ port: 35729 }));
+app.use(livereload({ port: 35750 }));
 app.use(stylus.middleware({
   src     : __dirname + '/app/css',
   dest    : __dirname + '/public',

@@ -5,7 +5,7 @@ var gulp = require('gulp')
 ;
 
 gulp.task('livereload', function() {
-  var lr = livereload();
+  var lr = livereload(35750);
   var reload = function(file) {
     if (path.extname(file.path) === '.styl') {
       file.path = __dirname + '/public/main.css';
