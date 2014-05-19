@@ -4,7 +4,7 @@ var Promise = require('bluebird')
 
 exports.uploadFile = function(path, formData) {
   var deferred = Promise.defer();
-  $.ajax({
+  var xhr = $.ajax({
     type: 'POST',
     url: path,
     contentType: false,
@@ -42,7 +42,7 @@ exports.uploadFile = function(path, formData) {
 //         console.log('done');
 //       }).catch(function(e) {
 //         console.log('error');
-//       }).progress(function (ev) {
+//       }).progress(function(ev) {
 //         var done  = ev.position || ev.loaded
 //           , total = ev.totalSize || ev.total;
 //

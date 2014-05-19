@@ -4,29 +4,49 @@ var EventEmitter = require('events').EventEmitter
   , api = require('./api')
 ;
 
-var OPTIMIZE_ENDPOINT = '/optimize'
+var MAX_UPLOADS = 4
+  , OPTIMIZE_ENDPOINT = '/optimize'
   , uploadFile = _.partial(api.uploadFile, OPTIMIZE_ENDPOINT);
 
 var Files = function() {
   this.list = [];
+  // this.processing = [];
+  // this.curUploads = 0;
 };
 
 Files.prototype = Object.create(EventEmitter.prototype);
 
 Files.prototype.push = function(files) {
-  this.list = this.list.concat(
-    // _.map(_.flatten(files), _.compose(addId, file2obj))
-    _.map(_.flatten(files), addId)
-  );
-
-  // TODO: init upload
-  this.upload();
+  var added = _.map(_.flatten(files), addId);
+  this.list = this.list.concat(added);
+  this.initUpload();
   this.emit('change');
 };
 
-Files.prototype.upload = function() {
-  uploadFile(file2fd(this.list[0]))
+// Check if we are uploading max amount of files
+// Get the first file that is not being uploaded
+// Call self again
+Files.prototype.initUpload = function() {
+  var next = _.find(this.list, notUploading);
+  next && this.upload(next);
 };
+
+Files.prototype.upload = function(file) {
+  // file.uploading = true;
+
+  uploadFile(file2fd(file)).then(function() {
+    // file.uploading = false;
+    // TODO: Upload more if can
+  });
+};
+
+Files.prototype.uploading = function() {
+  return _.filter(this.list, { uploading: true });
+};
+
+function notUploading(file) {
+  return file.uploading !== true;
+}
 
 function addId(obj) {
   return _.extend(obj, {
