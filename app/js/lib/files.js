@@ -37,6 +37,7 @@ Files.prototype.upload = maybe(function(file) {
   file.state = FILE_UPLOADING;
   this.initUpload();
 
+  // TODO: Handle errors
   uploadFile(file2fd(file.__file)).then(function() {
     file.state = FILE_OPTIMIZED;
     this.initUpload();
