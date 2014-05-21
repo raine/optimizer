@@ -1,5 +1,5 @@
 /** @jsx React.DOM */
-var React = require('react')
+var React = require('react/addons')
   , Dropzone = require('../lib/dropzone')
   , FileTable = require('./filetable')
 ;

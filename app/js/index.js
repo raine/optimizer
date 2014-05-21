@@ -1,5 +1,5 @@
 /** @jsx React.DOM */
-var React = window.React = require('react')
+var React = window.React = require('react/addons')
   , Files = require('./lib/files')
   , App = require('./components/app')
 ;
