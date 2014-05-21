@@ -2,6 +2,7 @@ var EventEmitter = require('events').EventEmitter
   , _ = require('lodash')
   , uuid = require('node-uuid')
   , api = require('./api')
+  , maybe = require('./utils').maybe
 ;
 
 var FILE_DROPPED    = 'DROPPED';
@@ -68,22 +69,6 @@ function file2fd(file) {
   var fd = new FormData();
   fd.append('file', file, file.name);
   return fd;
-}
-
-// From JavaScript Allongé by raganwald
-function maybe(fn) {
-  return function() {
-    var i;
-
-    if (arguments.length === 0) {
-      return;
-    } else {
-      for (i = 0; i < arguments.length; ++i) {
-        if (arguments[i] == null) return;
-      }
-      return fn.apply(this, arguments)
-    }
-  }
 }
 
 module.exports = Files;
