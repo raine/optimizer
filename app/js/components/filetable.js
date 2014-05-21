@@ -11,7 +11,7 @@ var FileTable = React.createClass({
     });
 
     return (
-      <table className="table table-striped">
+      <table className="table table-striped files">
         <tbody>
           {rows}
         </tbody>
