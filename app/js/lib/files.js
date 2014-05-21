@@ -34,19 +34,22 @@ Files.prototype.initUpload = function() {
 
 Files.prototype.upload = maybe(function(file) {
   if (this.uploading() >= MAX_UPLOADS) return;
-
-  // TODO: Handle optimizing state correctly
   file.state = FILE_UPLOADING;
+  this.initUpload();
+
   uploadFile(file2fd(file.__file)).then(function() {
     file.state = FILE_OPTIMIZED;
     this.initUpload();
   }.bind(this)).progressed(function(ev) {
     file.bytesUploaded = ev.position  || ev.loaded
     file.bytesTotal    = ev.totalSize || ev.total
+
+    if (file.bytesUploaded === file.bytesTotal) {
+      file.state = FILE_OPTIMIZING;
+    }
+
     this.emit('change');
   }.bind(this));
-
-  this.initUpload();
 });
 
 Files.prototype.next2upload = function() {
