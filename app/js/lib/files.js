@@ -10,8 +10,6 @@ var MAX_UPLOADS = 4
 
 var Files = function() {
   this.list = [];
-  // this.processing = [];
-  // this.curUploads = 0;
 };
 
 Files.prototype = Object.create(EventEmitter.prototype);
