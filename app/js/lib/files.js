@@ -21,7 +21,7 @@ Files.prototype = Object.create(EventEmitter.prototype);
 
 // `push` for an array is bad semantics
 Files.prototype.push = function(files) {
-  var added = _.map(_.flatten(files), prepareFile);
+  var added = _.map(_.flatten(files), file2obj);
   this.list = this.list.concat(added);
   this.initUpload();
 };
@@ -36,7 +36,7 @@ Files.prototype.upload = maybe(function(file) {
 
   // TODO: Handle optimizing state correctly
   file.state = FILE_UPLOADING;
-  uploadFile(file2fd(file)).then(function() {
+  uploadFile(file2fd(file.__file)).then(function() {
     file.state = FILE_OPTIMIZED;
     this.initUpload();
   }.bind(this)).progressed(function(ev) {
@@ -56,16 +56,12 @@ Files.prototype.uploading = function() {
   return _.filter(this.list, { state: FILE_UPLOADING }).length;
 };
 
-function prepareFile(file) {
-  return _.extend(file, {
-    state : FILE_DROPPED,
-    id    : uuid.v4()
-  });
-}
-
-// Convert a FileList file into a new object
 function file2obj(file) {
-  return _.pick(file, ['name', 'size', 'type']);
+  return _.extend({}, {
+    state  : FILE_DROPPED,
+    id     : uuid.v4(),
+    __file : file
+  }, file);
 }
 
 function file2fd(file) {
