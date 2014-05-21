@@ -4,6 +4,11 @@ var EventEmitter = require('events').EventEmitter
   , api = require('./api')
 ;
 
+var FILE_DROPPED    = 'DROPPED';
+var FILE_UPLOADING  = 'UPLOADING';
+var FILE_OPTIMIZING = 'OPTIMIZING';
+var FILE_OPTIMIZED  = 'OPTIMIZED';
+
 var MAX_UPLOADS = 4
   , OPTIMIZE_ENDPOINT = '/optimize'
   , uploadFile = _.partial(api.uploadFile, OPTIMIZE_ENDPOINT);
@@ -14,8 +19,9 @@ var Files = function() {
 
 Files.prototype = Object.create(EventEmitter.prototype);
 
+// `push` for an array is bad semantics
 Files.prototype.push = function(files) {
-  var added = _.map(_.flatten(files), addId);
+  var added = _.map(_.flatten(files), prepareFile);
   this.list = this.list.concat(added);
   this.initUpload();
 };
@@ -26,13 +32,12 @@ Files.prototype.initUpload = function() {
 };
 
 Files.prototype.upload = maybe(function(file) {
-  if (this.uploading().length >= MAX_UPLOADS) return;
+  if (this.uploading() >= MAX_UPLOADS) return;
 
-  // TODO: manage state with one property instead of multiple booleans?
-  file.uploading = true;
+  // TODO: Handle optimizing state correctly
+  file.state = FILE_UPLOADING;
   uploadFile(file2fd(file)).then(function() {
-    file.uploading = false;
-    file.uploaded  = true;
+    file.state = FILE_OPTIMIZED;
     this.initUpload();
   }.bind(this)).progressed(function(ev) {
     file.bytesUploaded = ev.position  || ev.loaded
@@ -44,20 +49,17 @@ Files.prototype.upload = maybe(function(file) {
 });
 
 Files.prototype.next2upload = function() {
-  return _.find(this.list, shouldUpload);
+  return _.find(this.list, { state: FILE_DROPPED });
 };
 
 Files.prototype.uploading = function() {
-  return _.filter(this.list, { uploading: true });
+  return _.filter(this.list, { state: FILE_UPLOADING }).length;
 };
 
-function shouldUpload(file) {
-  return file.uploading !== true && file.uploaded !== true;
-}
-
-function addId(obj) {
-  return _.extend(obj, {
-    id: uuid.v4()
+function prepareFile(file) {
+  return _.extend(file, {
+    state : FILE_DROPPED,
+    id    : uuid.v4()
   });
 }
 
@@ -72,6 +74,7 @@ function file2fd(file) {
   return fd;
 }
 
+// From JavaScript Allongé by raganwald
 function maybe(fn) {
   return function() {
     var i;
