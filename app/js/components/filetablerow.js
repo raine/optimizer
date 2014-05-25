@@ -1,53 +1,32 @@
 /** @jsx React.DOM */
 var React = require('react/addons')
   , cx = React.addons.classSet
+  , ProgressBar = require('./progressbar')
 ;
 
-var transitionEndEvent = whichTransitionEvent();
-
-// TODO: Extract progress bar to a separate component
 var FileTableRow = React.createClass({
-  getInitialState: function() {
-    return {
-      progAnimReady: false
-    };
-  },
-
-  componentDidMount: function() {
-    var progInner = this.refs.progInner.getDOMNode();
-    progInner.addEventListener(transitionEndEvent, function() {
-      this.setState({ progAnimReady: true });
-    }.bind(this));
-  },
-
   render: function() {
-    var file = this.props.file;
-    var progress = {
-      width: (file.bytesUploaded / file.bytesTotal * 100) + '%'
-    };
+    var file = this.props.file
+      , progBar = this.refs.progbar
 
-    var progClass = cx({
-      'progress': true,
-      'progress-striped active': file.state === 'OPTIMIZING' && this.state.progAnimReady
-    });
-
-    var progInnerClass = cx({
-      'progress-bar': true,
-      'progress-bar-success': file.state === 'OPTIMIZED',
-    });
+      , progCompleted     = progBar && progBar.completed
+      , progStripedActive = file.state === 'OPTIMIZING' && progCompleted
+      , progSuccess       = file.state === 'OPTIMIZED'
+    ;
 
     return (
       <tr>
         <td>{file.name}</td>
         <td>
-          <div className={progClass}>
-            <div
-              ref="progInner"
-              className={progInnerClass}
-              role="progressbar"
-              style={progress}
-            />
-          </div>
+          <ProgressBar
+            ref='progbar'
+            now={file.bytesUploaded}
+            max={file.bytesTotal}
+            striped={progStripedActive}
+            active={progStripedActive}
+            success={progSuccess}
+            onAnimEnd={this.forceUpdate.bind(this)}
+          />
         </td>
         <td>{file.bytesUploaded}</td>
         <td>{file.bytesTotal}</td>
@@ -57,20 +36,3 @@ var FileTableRow = React.createClass({
 });
 
 module.exports = FileTableRow;
-
-function whichTransitionEvent() {
-  var t;
-  var el = document.createElement('fakeelement');
-  var transitions = {
-    'transition'       : 'transitionend',
-    'OTransition'      : 'oTransitionEnd',
-    'MozTransition'    : 'transitionend',
-    'WebkitTransition' : 'webkitTransitionEnd'
-  }
-
-  for (t in transitions) {
-    if (el.style[t] !== undefined) {
-      return transitions[t];
-    }
-  }
-}
