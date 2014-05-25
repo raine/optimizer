@@ -44,10 +44,12 @@ app.post('/optimize', function(req, res) {
 
     console.log(format('got %s (%s; %d bytes)', filename, type, file.size))
     optimize(file.path, type).then(function(opted) {
-      console.log(format('%s: optimized and now %d bytes', filename, opted.file.contents.length));
-      res.send(200);
-      // res.set('Content-Type', type);
-      // res.send(opted.file.contents);
+      var newSize = opted.file.contents.length;
+      console.log(format('%s: optimized and now %d bytes', filename, newSize));
+      res.send({
+        original_size : file.size,
+        new_size      : newSize
+      });
     }).error(function(err) {
       console.error('Error:', err);
       res.send({ 'error': err });

@@ -38,8 +38,9 @@ Files.prototype.upload = maybe(function(file) {
   this.initUpload();
 
   // TODO: Handle errors
-  uploadFile(file2fd(file.__file)).then(function() {
+  uploadFile(file2fd(file.__file)).then(function(file) {
     file.state = FILE_OPTIMIZED;
+    file.bytesNewSize = file.new_size;
     this.initUpload();
   }.bind(this)).progressed(function(ev) {
     file.bytesUploaded = ev.position  || ev.loaded
